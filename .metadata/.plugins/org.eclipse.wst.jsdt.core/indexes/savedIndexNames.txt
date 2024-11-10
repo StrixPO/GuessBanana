@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+D:\Study\PCPS_Assignments\CIS_project\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1866470408.index
+3328044657.index
+570072550.index
+2128478777.index
+598214652.index
+114164536.index

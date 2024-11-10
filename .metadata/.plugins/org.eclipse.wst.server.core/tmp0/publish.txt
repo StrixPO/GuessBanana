@@ -1,0 +1,5 @@
+#Tomcat publish data
+#Sun Nov 10 01:23:56 NPT 2024
+org.eclipse.jst.j2ee.server\:/binary\:C\:\\Users\\ThinkBook\\.m2\\repository\\org\\apache\\tomcat\\embed\\tomcat-embed-el\\10.1.8\\tomcat-embed-el-10.1.8.jar=WEB-INF/lib/tomcat-embed-el-10.1.8.jar
+org.eclipse.jst.j2ee.server\:/binary\:C\:\\Users\\ThinkBook\\.m2\\repository\\org\\apache\\tomcat\\embed\\tomcat-embed-websocket\\10.1.8\\tomcat-embed-websocket-10.1.8.jar=WEB-INF/lib/tomcat-embed-websocket-10.1.8.jar
+org.eclipse.jst.j2ee.server\:/binary\:C\:\\Users\\ThinkBook\\.m2\\repository\\org\\springframework\\spring-web\\6.0.9\\spring-web-6.0.9.jar=WEB-INF/lib/spring-web-6.0.9.jar

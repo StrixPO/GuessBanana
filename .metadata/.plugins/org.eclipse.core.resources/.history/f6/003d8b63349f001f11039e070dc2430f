@@ -1,0 +1,22 @@
+package com.banana.backend.engine;
+
+import org.junit.jupiter.api.Test;
+import java.awt.image.BufferedImage;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.banana.backend.service.GameEngine;
+
+
+public class GameEngineTest {
+
+    @Test
+    public void testNextGame() {
+        GameEngine engine = new GameEngine("TestPlayer");
+        BufferedImage gameImage = engine.nextGame();
+        assertNotNull(gameImage, "Game image should not be null");
+
+        // Test if the solution is working
+        boolean correctSolution = engine.checkSolution(engine.current.getSolution());
+        assertTrue(correctSolution, "The solution should be correct for the current game");
+    }
+}

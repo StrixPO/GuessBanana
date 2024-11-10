@@ -1,0 +1,40 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+public class GameEngine {
+	 private Game current; 
+    private String player;
+    private int score = 0;
+    private Game currentGame;
+    private GameServer gameServer;
+
+    public GameEngine(String player) {
+        this.player = player;
+        this.gameServer = new GameServer();
+    }
+
+    // Get the next game from the GameServer
+    public Game nextGame() {
+        this.currentGame = gameServer.getRandomGame();
+        return currentGame;
+    }
+
+    // Check if the submitted solution is correct
+    public boolean checkSolution(int solution) {
+        if (currentGame != null && solution == currentGame.getSolution()) {
+            score++;
+            return true;
+        }
+        return false;
+    }
+
+    // Return the current score
+    public int getScore() {
+        return score;
+    }
+    
+    public Game getCurrentGame() {
+        return current;
+    }
+}

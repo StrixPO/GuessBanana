@@ -1,0 +1,15 @@
+# Java specific
+/target/
+*.class
+*.log
+.classpath
+.project
+.settings/
+
+# Node.js specific
+/node_modules/
+/build/
+
+# OS/IDE specific
+.DS_Store
+*.iml
