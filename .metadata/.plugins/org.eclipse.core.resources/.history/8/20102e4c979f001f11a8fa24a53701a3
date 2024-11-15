@@ -1,0 +1,54 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+public class GameEngine {
+    private Game currentGame;
+    private int remainingChances = 3;  // Initialize with 3 chances
+    private int score = 0;  // Player's score
+
+    // Constructor
+    public GameEngine(Game game) {
+        this.currentGame = game;
+    }
+    
+    // Fetch the current game
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+
+    // Method to check if the player's solution is correct
+    // Check the player's solution
+    public boolean checkSolution(int playerSolution) {
+        if (currentGame.getCorrectSolution() == playerSolution) {
+            return true; // Correct solution
+        } else {
+            remainingChances--; // Decrease chances on wrong answer
+            return false; // Incorrect solution
+        }
+    }
+    
+    public int getRemainingChances() {
+        return remainingChances; // Return remaining chances
+    }
+
+    // Get the current score
+    public int getScore() {
+        return score;
+    }
+    
+	public Game nextGame() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+    // Reset the game engine for a new game
+    public void resetGame() {
+        this.currentGame = new Game();
+        this.remainingChances = 3; // Reset chances for a new game
+    }
+
+    // Other methods and attributes of GameEngine class
+}
+

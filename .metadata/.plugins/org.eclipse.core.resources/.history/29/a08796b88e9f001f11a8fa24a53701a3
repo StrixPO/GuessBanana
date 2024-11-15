@@ -1,0 +1,42 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+
+    private Map<String, GameEngine> gameEngines = new HashMap<>();
+
+    // Endpoint to fetch the next game for a player
+    @GetMapping("/next")
+    public ResponseEntity<Map<String, Object>> nextGame(@RequestParam String player) {
+        GameEngine gameEngine = getGameEngineForPlayer(player);
+        Game game = gameEngine.nextGame();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", game.getImageBase64()); // Send image in base64
+        response.put("remainingChances", gameEngine.getRemainingChances());
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Endpoint to check the solution
+    @PostMapping("/check/{solution}")
+    public ResponseEntity<Map<String, Object>> checkSolution(@PathVariable int solution, @RequestParam String player) {
+        GameEngine gameEngine = getGameEngineForPlayer(player);
+        boolean isCorrect = gameEngine.checkSolution(solution);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", isCorrect);
+        response.put("score", gameEngine.getScore());
+        response.put("remainingChances", gameEngine.getRemainingChances());
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Helper method to get the game engine for the player
+    private GameEngine getGameEngineForPlayer(String player) {
+        return gameEngines.computeIfAbsent(player, GameEngine::new);
+    }
+}

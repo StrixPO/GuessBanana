@@ -1,0 +1,57 @@
+package com.banana.backend.controller;
+
+import com.banana.backend.service.GameEngine;
+import com.banana.backend.service.GameServer;
+import com.banana.backend.model.Game;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+
+
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+
+    private Map<String, GameEngine> activeGames = new HashMap<>();
+    private GameServer gameServer = new GameServer(); // Assuming you have a GameServer to provide random games
+
+    // Fetch the next game and return the image in Base64 format along with remaining chances
+    @GetMapping("/next")
+    public ResponseEntity<Map<String, Object>> nextGame() {
+        Game game = gameServer.getRandomGame();
+        GameEngine gameEngine = new GameEngine(game);
+        activeGames.put("player1", gameEngine);  // Assuming single-player, replace with proper ID handling
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", game.getImageBase64());
+        response.put("remainingChances", gameEngine.getRemainingChances());
+        
+        return ResponseEntity.ok(response);
+    }
+
+    // Check if the solution is correct
+    @PostMapping("/check/{solution}")
+    public ResponseEntity<Map<String, Object>> checkSolution(@PathVariable int solution) {
+        GameEngine gameEngine = activeGames.get("player1");  // Assuming single-player
+        
+        boolean correct = gameEngine.checkSolution(solution);
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", correct); 
+        response.put("remainingChances", gameEngine.getRemainingChances());
+        response.put("score", gameEngine.getScore());
+        
+        return ResponseEntity.ok(response);
+    }
+}

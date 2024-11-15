@@ -1,0 +1,34 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+public class GameEngine {
+    private Game currentGame;
+    private int remainingChances = 3;
+
+    public GameEngine() {
+        this.currentGame = new Game(null, remainingChances /* pass necessary arguments */ ); // Use existing constructor
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public boolean checkSolution(int playerSolution) {
+        if (currentGame.getCorrectSolution() == playerSolution) {
+            return true;
+        } else {
+            remainingChances--;
+            return false;
+        }
+    }
+
+    public int getRemainingChances() {
+        return remainingChances;
+    }
+
+    public void resetGame() {
+        this.currentGame = new Game(null, remainingChances /* pass necessary arguments */ ); // Reset with arguments if required
+        this.remainingChances = 3;
+    }
+}

@@ -1,0 +1,59 @@
+package com.banana.backend.engine;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+
+import javax.imageio.ImageIO;
+
+import com.banana.backend.model.Game;
+import com.banana.backend.service.GameEngine;
+
+import java.io.File;
+import java.io.IOException;
+
+
+public class GameEngineTest {
+
+    public static void main(String[] args) {
+        // Create a new GameEngine for testing
+        GameEngine engine = new GameEngine(null);
+
+        // Fetch the next game, which returns a Game object (not just an image)
+        Game game = engine.nextGame();
+
+        // Check if a game is successfully fetched
+        if (game != null) {
+            System.out.println("Game fetched successfully!");
+
+            // Retrieve the game image
+            BufferedImage gameImage = game.getImage();
+
+            // Save the image locally for inspection
+            try {
+                File outputfile = new File("fetchedGame.png");
+                ImageIO.write(gameImage, "png", outputfile);
+                System.out.println("Game image saved as 'fetchedGame.png'.");
+            } catch (IOException e) {
+                System.out.println("Error saving game image: " + e.getMessage());
+            }
+
+            // Retrieve and print the solution
+            int solution = game.getSolution();
+            System.out.println("Correct solution for the game is: " + solution);
+
+            // Simulate checking the solution
+            boolean correctSolution = engine.checkSolution(solution);
+            if (correctSolution) {
+                System.out.println("Correct solution entered!");
+            } else {
+                System.out.println("Incorrect solution entered.");
+            }
+
+            // Check the score
+            int score = engine.getScore();
+            System.out.println("Player's score: " + score);
+        } else {
+            System.out.println("Failed to fetch game.");
+        }
+    }
+}

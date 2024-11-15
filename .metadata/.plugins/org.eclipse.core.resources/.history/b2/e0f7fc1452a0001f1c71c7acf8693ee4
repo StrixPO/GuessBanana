@@ -1,0 +1,62 @@
+package com.banana.backend.controller;
+
+import com.banana.backend.service.GameEngine;
+import com.banana.backend.service.GameServer;
+import com.banana.backend.model.Game;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+
+    private Map<String, GameEngine> activeGames = new HashMap<>();
+    private GameServer gameServer = new GameServer(); // GameServer to provide random games
+    private String currentPlayer = "player1"; // Track whose turn it is
+    private String nextPlayer = "player2"; // Track the next player
+
+    // Fetch the next game for the current player
+    @GetMapping("/next")
+    public ResponseEntity<Map<String, Object>> nextGame(@RequestParam String player) {
+        Game game = gameServer.getRandomGame();
+        GameEngine gameEngine = new GameEngine(game, player);
+
+        activeGames.put(player, gameEngine); // Store the game engine for the player
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", game.getImageBase64());
+        response.put("player", player); // Send player information
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Check if the solution is correct and prepare for the next player's turn
+    @PostMapping("/check/{solution}")
+    public ResponseEntity<Map<String, Object>> checkSolution(@PathVariable int solution, @RequestParam String player) {
+        GameEngine gameEngine = activeGames.get(player); // Get the current player's game engine
+
+        boolean correct = gameEngine.checkSolution(solution);
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", correct);
+        response.put("score", gameEngine.getScore());
+
+        if (player.equals(currentPlayer)) {
+            currentPlayer = nextPlayer; // Switch to next player
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Get the final scores of both players
+    @GetMapping("/scores")
+    public ResponseEntity<Map<String, Object>> getScores() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("player1Score", activeGames.get("player1").getScore());
+        response.put("player2Score", activeGames.get("player2").getScore());
+        
+        return ResponseEntity.ok(response);
+    }
+}

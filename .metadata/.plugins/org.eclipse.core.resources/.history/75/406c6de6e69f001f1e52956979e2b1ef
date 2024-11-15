@@ -1,0 +1,58 @@
+package com.banana.backend.controller;
+
+import com.banana.backend.service.GameEngine;
+import com.banana.backend.service.GameServer;
+import com.banana.backend.model.Game;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+
+
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+    private Map<String, GameEngine> playerGameMap = new HashMap<>();
+
+    @GetMapping("/next")
+    public ResponseEntity<?> getNextGame(@RequestParam("player") String player) {
+        GameEngine engine = playerGameMap.computeIfAbsent(player, k -> new GameEngine());
+        Game currentGame = engine.getCurrentGame();
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", currentGame.getImageBase64()); // Send game image
+        response.put("remainingChances", engine.getRemainingChances()); // Send remaining chances
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/check/{solution}")
+    public ResponseEntity<?> checkSolution(
+            @PathVariable int solution,
+            @RequestParam("player") String player) {
+        GameEngine engine = playerGameMap.get(player);
+        
+        boolean correct = engine.checkSolution(solution);
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", correct);
+        response.put("remainingChances", engine.getRemainingChances()); // Send updated chances
+
+        if (correct) {
+            engine.resetGame(); // Reset game if solution is correct
+            response.put("score", 1); // Update score (this can be adjusted)
+        }
+
+        return ResponseEntity.ok(response);
+    }
+}

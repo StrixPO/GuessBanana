@@ -6,37 +6,46 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Base64;
 
 public class GameServer {
-    // Fetch a random game from the Banana API
+    // Method to fetch game from the Banana API
     public Game getRandomGame() {
-        String apiUrl = "https://marcconrad.com/uob/banana/api.php?out=csv&base64=yes";
+        String bananaapi = "https://marcconrad.com/uob/banana/api.php?out=csv&base64=yes";
+        String dataraw = readUrl(bananaapi);
+        
+        if (dataraw == null || dataraw.isEmpty()) {
+            System.out.println("Error: Could not retrieve game data from the server.");
+            return null; // Return null if the data is empty or invalid
+        }
+        
+        String[] data = dataraw.split(",");
+        if (data.length != 2) {
+            System.out.println("Error: Malformed game data received.");
+            return null; // Invalid data structure
+        }
+
+        byte[] decodeImg = Base64.getDecoder().decode(data[0]);
+        ByteArrayInputStream quest = new ByteArrayInputStream(decodeImg);
+        int solution = Integer.parseInt(data[1]);
+
+        BufferedImage img = null;
         try {
-            // Fetch game data as a CSV string
-            String dataRaw = fetchGameData(apiUrl);
-
-            // Parse CSV into an image and a solution
-            String[] data = dataRaw.split(",");
-            byte[] decodedImage = Base64.getDecoder().decode(data[0]);
-            int solution = Integer.parseInt(data[1]);
-
-            // Convert byte data into a BufferedImage
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedImage));
-
-            return new Game(image, solution);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            img = ImageIO.read(quest);
+            return new Game(img, solution);
+        } catch (IOException e) {
+            System.out.println("Error processing game image: " + e.getMessage());
+            return null; // Return null in case of failure to process the image
         }
     }
 
-    // Helper function to read data from the URL
-    private String fetchGameData(String apiUrl) {
+    // Utility method to read the URL
+    private static String readUrl(String urlString) {
         try {
-            URL url = new URL(apiUrl);
+            URL url = new URL(urlString);
             InputStream inputStream = url.openStream();
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -46,8 +55,9 @@ public class GameServer {
             }
             return result.toString("UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            System.out.println("Error reading URL: " + e.getMessage());
+            return null; // Return null if URL reading fails
         }
     }
 }
+

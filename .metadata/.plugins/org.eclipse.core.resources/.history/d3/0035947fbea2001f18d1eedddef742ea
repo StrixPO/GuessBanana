@@ -1,0 +1,51 @@
+package com.banana.backend.controller;
+
+import com.banana.backend.service.GameEngine;
+import com.banana.backend.service.GameServer;
+import com.banana.backend.model.Game;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+
+    private Map<String, GameEngine> activeGames = new HashMap<>();
+    private GameServer gameServer = new GameServer(); // Assuming you have a GameServer to provide random games
+
+    // Fetch the next game and return the image in Base64 format along with remaining chances
+    @GetMapping("/next")
+    public ResponseEntity<Map<String, Object>> nextGame(@RequestParam String player) {
+        Game game = gameServer.getRandomGame();
+        GameEngine gameEngine = activeGames.getOrDefault(player, new GameEngine(game));
+        activeGames.put(player, gameEngine);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", game.getImageBase64());
+        response.put("remainingChances", gameEngine.getRemainingChances()); // Optional
+        response.put("score", gameEngine.getScore()); // Return current score
+        
+        return ResponseEntity.ok(response);
+    }
+
+    // Check if the solution is correct
+    @PostMapping("/check/{solution}")
+    public ResponseEntity<Map<String, Object>> checkSolution(@PathVariable int solution, @RequestParam String player) {
+        GameEngine gameEngine = activeGames.get(player);
+        
+        if (gameEngine == null) {
+            return ResponseEntity.badRequest().body(null); // Handle case if player game not found
+        }
+        
+        boolean correct = gameEngine.checkSolution(solution);
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", correct);
+        response.put("remainingChances", gameEngine.getRemainingChances()); // Optional
+        response.put("score", gameEngine.getScore()); // Return updated score
+        
+        return ResponseEntity.ok(response);
+    }
+}

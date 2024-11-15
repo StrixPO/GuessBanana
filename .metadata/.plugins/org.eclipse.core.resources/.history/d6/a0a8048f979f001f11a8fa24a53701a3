@@ -1,0 +1,36 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+public class GameEngine {
+    private GameServer gameServer = new GameServer();
+    private Game currentGame = null;
+    private int score = 0;
+
+    // Fetch the next game and handle errors if game is null
+    public Game nextGame() {
+        currentGame = gameServer.getRandomGame();
+        if (currentGame == null) {
+            System.out.println("Error: Could not retrieve the next game.");
+        }
+        return currentGame;
+    }
+
+    // Check if the solution is correct
+    public boolean checkSolution(int inputSolution) {
+        if (currentGame == null) {
+            System.out.println("No game loaded to check the solution.");
+            return false;
+        }
+        if (inputSolution == currentGame.getSolution()) {
+            score++;
+            return true;
+        }
+        return false;
+    }
+
+    // Return the current score
+    public int getScore() {
+        return score;
+    }
+}

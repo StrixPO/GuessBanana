@@ -1,0 +1,47 @@
+package com.banana.backend.service;
+
+import com.banana.backend.model.Game;
+
+public class GameEngine {
+    private Game currentGame;
+    private int remainingChances = 3;  // Optional if needed later
+    private int score = 0;  // Player's score
+
+    // Constructor
+    public GameEngine(Game game) {
+        this.currentGame = game;
+    }
+
+    // Method to return the current game instance
+    public Game getCurrentGame() {
+        return this.currentGame;
+    }
+
+    // Method to return remaining chances (Optional if needed later)
+    public int getRemainingChances() {
+        return this.remainingChances;
+    }
+    
+ // Method to update the game to a new one
+    public void setNewGame(Game newGame) {
+        this.currentGame = newGame;
+    }
+
+    // Method to check if the player's solution is correct
+    public boolean checkSolution(int playerSolution) {
+        if (playerSolution == currentGame.getCorrectSolution()) {
+            score++;  // Increment score for each correct solution
+            return true;
+        } else {
+            remainingChances--;  // Reduce chances if wrong answer (Optional for future use)
+            return false;
+        }
+    }
+
+    // Get the current score
+    public int getScore() {
+        return score;
+    }
+
+    // Other methods and attributes of GameEngine class
+}

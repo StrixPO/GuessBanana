@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9; /* Light background for the game */
+  color: #333; /* Dark text for readability */
+  text-align: center; /* Center content */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  background-color: #fff; /* White background for the game container */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow around the container */
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #ffba00; /* Banana color for the title */
+  font-size: 2.5em;
+}
+
+.App img {
+  border: 2px solid #ffba00; /* Banana-colored border around the image */
+  margin: 20px 0;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+input[type="text"],
+input[type="number"] {
+  padding: 10px;
+  font-size: 1em;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding doesn't overflow */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #ffba00; /* Banana color for buttons */
+  color: white;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e0a800; /* Darker yellow on hover */
+}
+
+h2,
+h3 {
+  margin: 20px 0;
+  color: #333;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+.timer {
+  font-size: 1.5em;
+  color: red; /* Red color for the timer */
+  margin-top: 10px;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.scoreboard h3 {
+  font-size: 1.2em;
+  color: #333;
+}

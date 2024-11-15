@@ -1,0 +1,47 @@
+package com.banana.backend.controller;
+
+import com.banana.backend.engine.GameEngine;
+import com.banana.backend.model.Game;
+import org.springframework.web.bind.annotation.*;
+
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/game")
+@CrossOrigin(origins = "http://localhost:3000") // Allow React frontend to access
+public class GameController {
+
+    private GameEngine gameEngine = new GameEngine("Player");
+
+    @GetMapping("/next")
+    public Map<String, Object> getNextGame() throws IOException {
+        Game game = gameEngine.nextGame();
+
+        // Convert game image to Base64
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(game.getImage(), "png", baos);
+        String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", base64Image);
+        response.put("solution", game.getSolution()); // Optional, for debugging
+
+        return response;
+    }
+
+    @PostMapping("/check/{solution}")
+    public Map<String, Object> checkSolution(@PathVariable int solution) {
+        boolean isCorrect = gameEngine.checkSolution(solution);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("correct", isCorrect);
+        response.put("score", gameEngine.getScore());
+
+        return response;
+    }
+}
